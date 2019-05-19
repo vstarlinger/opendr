@@ -476,13 +476,13 @@ class BaseRenderer(Ch):
         return np.asarray(np.tile(np.eye(3)[:self.f.shape[1], :], (self.verts_by_face.shape[0]//self.f.shape[1], 1)), dtype=np.float64, order='C')
 
 
-    @depends_on('f', 'v', 'vn')
+    @depends_on('f', 'v')
     def tn(self):
         from opendr.geometry import TriNormals
-        # return TriNormals(self.v, self.f).r.reshape((-1,3))
+        return TriNormals(self.v, self.f).r.reshape((-1,3))
 
-        tn = np.mean(self.vn.r[self.f.ravel()].reshape([-1, 3, 3]), 1)
-        return tn
+        #tn = np.mean(self.vn.r[self.f.ravel()].reshape([-1, 3, 3]), 1)
+        #return tn
 
     @property
     def fpe(self):
@@ -594,7 +594,7 @@ class BaseRenderer(Ch):
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        raw = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))
+        raw = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))
 
         raw = raw[:,:,0] + raw[:,:,1]*256 + raw[:,:,2]*256*256 - 1
 
@@ -668,7 +668,7 @@ class BaseRenderer(Ch):
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        raw = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))
+        raw = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))
 
         raw = raw[:,:,0] + raw[:,:,1]*256 + raw[:,:,2]*256*256 
 
@@ -939,7 +939,7 @@ class BaseRenderer(Ch):
 
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        raw = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))
+        raw = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['width'],3).astype(np.uint32))
         # plt.imsave("draw_edge_visibility_internal_raw1.png", raw)
 
         return raw[:,:,0] + raw[:,:,1]*256 + raw[:,:,2]*256*256 - 1
@@ -981,7 +981,7 @@ class BaseRenderer(Ch):
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
         # return np.array(im.transpose(Image.FLIP_TOP_BOTTOM), np.float64)/255.0
-        return np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.float64))/255.0
+        return np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.float64))/255.0
 
     def setup_camera(self, camera):
 
@@ -1140,7 +1140,7 @@ class ColoredRenderer(BaseRenderer):
             GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-            result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.float64))/255.0
+            result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['width'],3).astype(np.float64))/255.0
             # plt.imsave("opendr_draw_color_image.png", result)
             GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
             GL.glDisable(GL.GL_MULTISAMPLE)
@@ -1416,7 +1416,7 @@ class TexturedRenderer(ColoredRenderer):
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))[:,:,0]
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))[:,:,0]
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
 
@@ -1443,7 +1443,7 @@ class TexturedRenderer(ColoredRenderer):
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))[:,:,0]
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))[:,:,0]
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
 
@@ -1512,7 +1512,7 @@ class TexturedRenderer(ColoredRenderer):
 
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3)[:,:,:3].astype(np.float64))/255.0
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3))[:,:,:3].astype(np.float64))/255.0
 
         result[:,:,1] = 1. - result[:,:,1]
         return result
@@ -1735,7 +1735,7 @@ class TexturedRenderer(ColoredRenderer):
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.float64))/255.0
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.float64))/255.0
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
         GL.glDisable(GL.GL_MULTISAMPLE)
@@ -2610,24 +2610,24 @@ class AnalyticRenderer(ColoredRenderer):
             GL.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER, self.fbo_sample_fetch)
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:3].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:3].astype(np.float64))
 
             self.renders[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT1)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
             self.renders_sample_pos[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT2)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RED_INTEGER, GL.GL_UNSIGNED_INT), np.uint32).reshape(self.frustum['height'], self.frustum['height'])[:,:].astype(np.uint32))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RED_INTEGER, GL.GL_UNSIGNED_INT), np.uint32).reshape(self.frustum['width'], self.frustum['height'])[:,:].astype(np.uint32))
             self.renders_faces[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT3)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
             self.renders_sample_barycentric1[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT4)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:1].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:1].astype(np.float64))
             self.renders_sample_barycentric2[sample] = result
 
             self.renders_sample_barycentric[sample] = np.concatenate([self.renders_sample_barycentric1[sample], self.renders_sample_barycentric2[sample][:,:,0:1]], 2)
@@ -4129,7 +4129,7 @@ class AnalyticRenderer(ColoredRenderer):
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))[:,:,0]
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))[:,:,0]
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
 
@@ -4156,7 +4156,7 @@ class AnalyticRenderer(ColoredRenderer):
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))[:,:,0]
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))[:,:,0]
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
 
@@ -4226,7 +4226,7 @@ class AnalyticRenderer(ColoredRenderer):
 
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3)[:,:,:3].astype(np.float64))/255.0
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3))[:,:,:3].astype(np.float64))/255.0
 
         result[:,:,1] = 1. - result[:,:,1]
         return result
@@ -4342,7 +4342,7 @@ class AnalyticRenderer(ColoredRenderer):
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.float64))/255.0
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.float64))/255.0
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
         GL.glDisable(GL.GL_MULTISAMPLE)
@@ -5217,24 +5217,24 @@ class AnalyticRendererOpenDR(ColoredRenderer):
             GL.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER, self.fbo_sample_fetch)
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:3].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:3].astype(np.float64))
 
             self.renders[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT1)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
             self.renders_sample_pos[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT2)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RED_INTEGER, GL.GL_UNSIGNED_INT), np.uint32).reshape(self.frustum['height'], self.frustum['height'])[:,:].astype(np.uint32))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RED_INTEGER, GL.GL_UNSIGNED_INT), np.uint32).reshape(self.frustum['width'], self.frustum['height'])[:,:].astype(np.uint32))
             self.renders_faces[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT3)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:2].astype(np.float64))
             self.renders_sample_barycentric1[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT4)
-            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['height'], self.frustum['height'], 3)[:,:,0:1].astype(np.float64))
+            result = np.flipud(np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(self.frustum['width'], self.frustum['height'], 3)[:,:,0:1].astype(np.float64))
             self.renders_sample_barycentric2[sample] = result
 
             self.renders_sample_barycentric[sample] = np.concatenate([self.renders_sample_barycentric1[sample], self.renders_sample_barycentric2[sample][:,:,0:1]], 2)
@@ -6741,7 +6741,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))[:,:,0]
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))[:,:,0]
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
 
@@ -6768,7 +6768,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.uint32))[:,:,0]
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.uint32))[:,:,0]
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
 
@@ -6838,7 +6838,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
 
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3)[:,:,:3].astype(np.float64))/255.0
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3))[:,:,:3].astype(np.float64))/255.0
 
         result[:,:,1] = 1. - result[:,:,1]
         return result
@@ -6954,7 +6954,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT0)
 
-        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape(self.frustum['height'],self.frustum['height'],3).astype(np.float64))/255.0
+        result = np.flipud(np.frombuffer(GL.glReadPixels( 0,0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_UNSIGNED_BYTE), np.uint8).reshape((self.frustum['height'], self.frustum['width'],3)).astype(np.float64))/255.0
 
         GL.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, self.fbo)
         GL.glDisable(GL.GL_MULTISAMPLE)
@@ -7852,19 +7852,19 @@ class ResidualRenderer(ColoredRenderer):
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT2)
             result = np.flipud(
                 np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RED_INTEGER, GL.GL_UNSIGNED_INT),
-                              np.uint32).reshape(self.frustum['height'], self.frustum['height'])[:, :].astype(np.uint32))
+                              np.uint32).reshape(self.frustum['width'], self.frustum['height'])[:, :].astype(np.uint32))
             self.renders_faces[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT3)
             result = np.flipud(
                 np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(
-                    self.frustum['height'], self.frustum['height'], 3)[:, :, 0:2].astype(np.float64))
+                    self.frustum['width'], self.frustum['height'], 3)[:, :, 0:2].astype(np.float64))
             self.renders_sample_barycentric1[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT4)
             result = np.flipud(
                 np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(
-                    self.frustum['height'], self.frustum['height'], 3)[:, :, 0:1].astype(np.float64))
+                    self.frustum['width'], self.frustum['height'], 3)[:, :, 0:1].astype(np.float64))
             self.renders_sample_barycentric2[sample] = result
 
             self.renders_sample_barycentric[sample] = np.concatenate(
@@ -10310,19 +10310,19 @@ class ResidualRendererOpenDR(ColoredRenderer):
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT2)
             result = np.flipud(
                 np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RED_INTEGER, GL.GL_UNSIGNED_INT),
-                              np.uint32).reshape(self.frustum['height'], self.frustum['height'])[:, :].astype(np.uint32))
+                              np.uint32).reshape(self.frustum['width'], self.frustum['height'])[:, :].astype(np.uint32))
             self.renders_faces[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT3)
             result = np.flipud(
                 np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(
-                    self.frustum['height'], self.frustum['height'], 3)[:, :, 0:2].astype(np.float64))
+                    self.frustum['width'], self.frustum['height'], 3)[:, :, 0:2].astype(np.float64))
             self.renders_sample_barycentric1[sample] = result
 
             GL.glReadBuffer(GL.GL_COLOR_ATTACHMENT4)
             result = np.flipud(
                 np.frombuffer(GL.glReadPixels(0, 0, self.frustum['width'], self.frustum['height'], GL.GL_RGB, GL.GL_FLOAT), np.float32).reshape(
-                    self.frustum['height'], self.frustum['height'], 3)[:, :, 0:1].astype(np.float64))
+                    self.frustum['width'], self.frustum['height'], 3)[:, :, 0:1].astype(np.float64))
             self.renders_sample_barycentric2[sample] = result
 
             self.renders_sample_barycentric[sample] = np.concatenate(
