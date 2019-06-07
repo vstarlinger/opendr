@@ -114,8 +114,11 @@ class BaseRenderer(Ch):
                 GL.glDeleteFramebuffers(1, [int(self.fbo_noms)])
                 if self.msaa:
                     GL.glDeleteFramebuffers(1, [int(self.fbo_ms)])
-
-                # print("Finished clearning base renderer")
+                if self.glMode == 'glfw':
+                    print("Terminating GLFW")
+                    import glfw
+                    glfw.terminate()
+                print("Finished clearning base renderer")
 
             except:
                 pdb.set_trace()
@@ -1014,7 +1017,7 @@ class ColoredRenderer(BaseRenderer):
         return 3
 
     def clear(self):
-        # print ("Clearing color renderer.")
+        print ("Clearing color renderer.")
         super().clear()
 
     @property
