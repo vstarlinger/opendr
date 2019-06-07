@@ -115,10 +115,10 @@ class BaseRenderer(Ch):
                 if self.msaa:
                     GL.glDeleteFramebuffers(1, [int(self.fbo_ms)])
                 if self.glMode == 'glfw':
-                    print("Terminating GLFW")
+                    #print("Terminating GLFW")
                     import glfw
                     glfw.terminate()
-                print("Finished clearning base renderer")
+                #print("Finished clearning base renderer")
 
             except:
                 pdb.set_trace()
@@ -137,7 +137,7 @@ class BaseRenderer(Ch):
         if self.glMode == 'glfw':
             import glfw
             glfw.init()
-            print("Initializing GLFW.")
+            #print("Initializing GLFW.")
 
             glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
             glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
@@ -223,7 +223,7 @@ class BaseRenderer(Ch):
             GL.glClear(GL.GL_COLOR_BUFFER_BIT)
             GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-            print ("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+            #print ("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
             assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
             GL.glBindFramebuffer(GL.GL_FRAMEBUFFER,0)
@@ -252,7 +252,7 @@ class BaseRenderer(Ch):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print ("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print ("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER,0)
@@ -416,11 +416,11 @@ class BaseRenderer(Ch):
 
         self.initialized = True
 
-        print('glValidateProgram: ' + str(GL.glValidateProgram(self.colorProgram)))
-        print('glGetProgramInfoLog ' + str(GL.glGetProgramInfoLog(self.colorProgram)))
-        print('GL_MAX_VERTEX_ATTRIBS: ' + str(GL.glGetInteger(GL.GL_MAX_VERTEX_ATTRIBS)))
+        #print('glValidateProgram: ' + str(GL.glValidateProgram(self.colorProgram)))
+        #print('glGetProgramInfoLog ' + str(GL.glGetProgramInfoLog(self.colorProgram)))
+        #print('GL_MAX_VERTEX_ATTRIBS: ' + str(GL.glGetInteger(GL.GL_MAX_VERTEX_ATTRIBS)))
 
-        print (GL.glGetError())
+        #print (GL.glGetError())
 
     @depends_on('f') # not v: specifically, it depends only on the number of vertices, not on the values in v
     def primitives_per_edge(self):
@@ -1017,7 +1017,7 @@ class ColoredRenderer(BaseRenderer):
         return 3
 
     def clear(self):
-        print ("Clearing color renderer.")
+        #print ("Clearing color renderer.")
         super().clear()
 
     @property
@@ -1231,7 +1231,7 @@ class TexturedRenderer(ColoredRenderer):
             print("Program had not been initialized")
 
     def initGLTexture(self):
-        print("Initializing Texture OpenGL.")
+        #print("Initializing Texture OpenGL.")
 
         GL.glLineWidth(1.)
 
@@ -1832,7 +1832,7 @@ class AnalyticRenderer(ColoredRenderer):
             print("Program had not been initialized")
 
     def initGLTexture(self):
-        print("Initializing Texture OpenGL.")
+        #print("Initializing Texture OpenGL.")
 
         FRAGMENT_SHADER = shaders.compileShader("""#version 330 core
         // Interpolated values from the vertex shaders
@@ -2219,7 +2219,7 @@ class AnalyticRenderer(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -2267,7 +2267,7 @@ class AnalyticRenderer(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -2311,7 +2311,7 @@ class AnalyticRenderer(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -4246,7 +4246,7 @@ class AnalyticRenderer(ColoredRenderer):
     # Pol: Check that depends on works on other attributes that depend_on x, if x changes.
     @depends_on( 'ft', 'f')
     def wireframe_tex_coords(self):
-        print("wireframe_tex_coords is being computed!")
+        #print("wireframe_tex_coords is being computed!")
         vvt = np.zeros((self.v.r.size/3,2), dtype=np.float64, order='C')
         vvt[self.f.flatten()] = self.mesh_tex_coords
         edata = np.zeros((self.vpe.size,2), dtype=np.float64, order='C')
@@ -4439,7 +4439,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
             print("Program had not been initialized")
 
     def initGLTexture(self):
-        print("Initializing Texture OpenGL.")
+        #print("Initializing Texture OpenGL.")
 
         FRAGMENT_SHADER = shaders.compileShader("""#version 330 core
         // Interpolated values from the vertex shaders
@@ -4826,7 +4826,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -4874,7 +4874,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -4918,7 +4918,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -6858,7 +6858,7 @@ class AnalyticRendererOpenDR(ColoredRenderer):
     # Pol: Check that depends on works on other attributes that depend_on x, if x changes.
     @depends_on( 'ft', 'f')
     def wireframe_tex_coords(self):
-        print("wireframe_tex_coords is being computed!")
+        #print("wireframe_tex_coords is being computed!")
         vvt = np.zeros((self.v.r.size/3,2), dtype=np.float64, order='C')
         vvt[self.f.flatten()] = self.mesh_tex_coords
         edata = np.zeros((self.vpe.size,2), dtype=np.float64, order='C')
@@ -7051,7 +7051,7 @@ class ResidualRenderer(ColoredRenderer):
             print("Program had not been initialized")
 
     def initGLTexture(self):
-        print("Initializing Texture OpenGL.")
+        #print("Initializing Texture OpenGL.")
 
         FRAGMENT_SHADER = shaders.compileShader("""#version 330 core
         // Interpolated values from the vertex shaders
@@ -7441,7 +7441,7 @@ class ResidualRenderer(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -7489,7 +7489,7 @@ class ResidualRenderer(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -7533,7 +7533,7 @@ class ResidualRenderer(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -9480,10 +9480,10 @@ class ResidualRendererOpenDR(ColoredRenderer):
         except:
             import pdb
             pdb.set_trace()
-            print("Program had not been initialized")
+            #print("Program had not been initialized")
 
     def initGLTexture(self):
-        print("Initializing Texture OpenGL.")
+        #print("Initializing Texture OpenGL.")
 
         FRAGMENT_SHADER = shaders.compileShader("""#version 330 core
         // Interpolated values from the vertex shaders
@@ -9898,7 +9898,7 @@ class ResidualRendererOpenDR(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -9946,7 +9946,7 @@ class ResidualRendererOpenDR(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -9990,7 +9990,7 @@ class ResidualRendererOpenDR(ColoredRenderer):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
 
-        print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
+        #print("FRAMEBUFFER ERR: " + str(GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)))
         assert (GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER) == GL.GL_FRAMEBUFFER_COMPLETE)
 
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
@@ -11757,7 +11757,7 @@ class ResidualRendererOpenDR(ColoredRenderer):
     # Pol: Check that depends on works on other attributes that depend_on x, if x changes.
     @depends_on('ft', 'f')
     def wireframe_tex_coords(self):
-        print("wireframe_tex_coords is being computed!")
+        #print("wireframe_tex_coords is being computed!")
         vvt = np.zeros((self.v.r.size / 3, 2), dtype=np.float64, order='C')
         vvt[self.f.flatten()] = self.mesh_tex_coords
         edata = np.zeros((self.vpe.size, 2), dtype=np.float64, order='C')
